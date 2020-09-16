@@ -1,3 +1,5 @@
+import nodeExternals from 'webpack-node-externals'
+
 export default {
   /*
    ** Nuxt rendering mode
@@ -13,6 +15,8 @@ export default {
    ** Headers of the page
    ** See https://nuxtjs.org/api/configuration-head
    */
+  // const nodeExternals = require('webpack-node-externals'),
+
   head: {
     title: process.env.npm_package_name || '',
     meta: [
@@ -29,12 +33,12 @@ export default {
   /*
    ** Global CSS
    */
-  css: [],
+  css: ['vuetify/src/stylus/main.styl'],
   /*
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ['~/plugins/axios.js'],
+  plugins: ['~/plugins/axios.js', '@/plugins/vuetify'],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -66,5 +70,14 @@ export default {
   build: {},
   env: {
     QIITA_TOKEN: process.env.QIITA_TOKEN,
+  },
+  extend(config, ctx) {
+    if (ctx.isServer) {
+      config.externals = [
+        nodeExternals({
+          whitelist: [/^vuetify/],
+        }),
+      ]
+    }
   },
 }
